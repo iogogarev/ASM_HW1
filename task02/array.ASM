@@ -1,4 +1,4 @@
-;ВАРИАНТ 6;
+;ВАРИАНТ 6;Variant 6
 ;Массив B сформировать по следующему правилу:
 ;он состоит из элементов А, значение которых кратно введенному числу X
 
@@ -13,6 +13,7 @@ section '.data' data readable writable
         strX            db 'X? ', 0
         strIncorrectX   db 'Your X is incorrect! ', 0
         strArrayB       db 'Array B:', 10, 0
+        strArrayA       db 'Array A:', 10, 0
         strIncorSize    db 'incorrect size of vector = %d' , 10, 0
         strVecElemI     db '[%d]? ', 0
         strScanInt      db  '%d', 0
@@ -41,6 +42,8 @@ start:
 
 getVectorFunc:
         call getVector
+        call putVecA
+printArrayB:
         call putVec
 
 incorrectX:
@@ -151,22 +154,25 @@ next:
         jmp getVecLoop
 
 endInputVector:
-        push strArrayB
-        call [printf]
-        xor ecx, ecx
-        xor edx, edx
-        mov edx, vecB
+
+
         mov esp, [tmpStack]
         ret
 
 putVec:
         mov [tmpStack], esp
+        push strArrayB
+        call [printf]
+        xor ecx, ecx
+        xor edx, edx
+        mov edx, vecB
         putVecLoop:
 
         mov [tmpB], edx
         cmp ecx, [b_size]
         je finish
         mov [i], ecx
+
         push dword [edx]
         push ecx
         push strVecElemOut
@@ -176,6 +182,31 @@ putVec:
         mov edx, [tmpB]
         add edx, 4
         jmp putVecLoop
+        mov esp, [tmpStack]
+        ret
+putVecA:
+        mov [tmpStack], esp
+        push strArrayA
+        call [printf]
+        xor ecx, ecx
+        xor edx, edx
+        mov edx, vec
+        putVecLoop2:
+
+        mov [tmpB], edx
+        cmp ecx, [vec_size]
+        je printArrayB
+        mov [i], ecx
+
+        push dword [edx]
+        push ecx
+        push strVecElemOut
+        call [printf]
+        mov ecx, [i]
+        inc ecx
+        mov edx, [tmpB]
+        add edx, 4
+        jmp putVecLoop2
         mov esp, [tmpStack]
         ret
 ;--------------------------------------------------------------------------------------------
